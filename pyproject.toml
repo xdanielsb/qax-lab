@@ -1,0 +1,63 @@
+[project]
+name = "qax-lab"
+version = "0.1.0"
+description = "Differentiable quantum circuits in JAX"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "QAX Lab contributors" }]
+keywords = ["jax", "quantum", "simulator", "differentiable", "vqe", "qaoa"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "jax>=0.4.30",
+    "jaxlib>=0.4.30",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+]
+viz = [
+    "matplotlib>=3.8",
+    "rich>=13.7",
+]
+notebook = [
+    "ipykernel>=6.29",
+    "jupyter>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/qax-lab/qax-lab"
+Documentation = "https://github.com/qax-lab/qax-lab#readme"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["qax"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "NPY", "RUF"]
+ignore = ["E741"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
