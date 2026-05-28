@@ -9,7 +9,6 @@ import pytest
 from qax import gates
 from qax.gates import gate_matrix
 
-
 SINGLE_QUBIT_NAMES = ["i", "x", "y", "z", "h", "s", "sdg", "t", "tdg"]
 TWO_QUBIT_NAMES = ["cnot", "cz", "swap"]
 
@@ -69,10 +68,8 @@ def test_param_required_for_parameterized() -> None:
 
 
 def test_h_on_zero_is_plus() -> None:
-    plus = (gates.h() @ jnp.array([1.0, 0.0], dtype=jnp.complex64))
-    np.testing.assert_allclose(
-        np.asarray(plus), np.array([1, 1]) / np.sqrt(2), atol=1e-6
-    )
+    plus = gates.h() @ jnp.array([1.0, 0.0], dtype=jnp.complex64)
+    np.testing.assert_allclose(np.asarray(plus), np.array([1, 1]) / np.sqrt(2), atol=1e-6)
 
 
 def test_cnot_matrix_explicit() -> None:

@@ -21,21 +21,21 @@ def main() -> None:
     print("GHZ state demo")
     print("=" * 60)
     print(f"\nCircuit: {circuit}")
-    print(f"\nNon-zero amplitudes:")
+    print("\nNon-zero amplitudes:")
     arr = jnp.asarray(state)
     for i, amp in enumerate(arr):
         if abs(complex(amp)) > 1e-6:
             print(f"  |{i:03b}>: {complex(amp):.4f}")
 
     probs = probabilities(state)
-    print(f"\nNon-zero probabilities:")
+    print("\nNon-zero probabilities:")
     for i, p in enumerate(jnp.asarray(probs)):
         if float(p) > 1e-6:
             print(f"  |{i:03b}>: {float(p):.4f}")
 
     key = jax.random.PRNGKey(0)
     counts = sample_counts(key, state, n_qubits=3, n_shots=2048)
-    print(f"\nMeasurement counts (2048 shots):")
+    print("\nMeasurement counts (2048 shots):")
     for bitstring, cnt in counts.items():
         print(f"  |{bitstring}>: {cnt}")
 

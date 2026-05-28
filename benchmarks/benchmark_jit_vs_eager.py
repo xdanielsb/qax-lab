@@ -16,7 +16,6 @@ from __future__ import annotations
 import time
 
 import jax
-import jax.numpy as jnp
 
 from qax import Circuit, simulate
 
@@ -58,6 +57,7 @@ def main() -> None:
     # Eager mode: rebuild the simulate call each time so we measure no JIT.
     def run_eager(params):
         return simulate(circuit, params, jit=False)
+
     eager = time_call(run_eager, params, repeats=3)
     print(f"Eager simulation:        {eager * 1e3:8.2f} ms / run")
 

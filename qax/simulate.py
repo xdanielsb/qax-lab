@@ -22,12 +22,12 @@ from .circuit import Circuit
 from .gates import gate_matrix
 from .program import Program, ProgramOp, assert_params_match, compile_circuit, resolve_parameter
 from .state import zero_state
-from .typing import Array, DEFAULT_COMPLEX, ParamTree
-
+from .typing import DEFAULT_COMPLEX, Array, ParamTree
 
 # ---------------------------------------------------------------------------
 # Tensor-contraction kernel
 # ---------------------------------------------------------------------------
+
 
 def _apply_gate(state: Array, gate: Array, wires: tuple[int, ...], n_qubits: int) -> Array:
     """Apply ``gate`` (shape ``(2^k, 2^k)``) to ``wires`` of ``state``.
@@ -37,9 +37,7 @@ def _apply_gate(state: Array, gate: Array, wires: tuple[int, ...], n_qubits: int
     """
     k = len(wires)
     if gate.shape != (1 << k, 1 << k):
-        raise ValueError(
-            f"Gate shape {gate.shape} does not match {k} wires."
-        )
+        raise ValueError(f"Gate shape {gate.shape} does not match {k} wires.")
 
     # Reshape statevector to a 2 x 2 x ... x 2 tensor and the gate to
     # (2,)*k_in x (2,)*k_out. The contraction is over the "input" axes of the
@@ -54,8 +52,8 @@ def _apply_gate(state: Array, gate: Array, wires: tuple[int, ...], n_qubits: int
     # ``wires``; everything else keeps its original order with the wire axes
     # removed. Move them back into their original positions.
     remaining = [ax for ax in range(n_qubits) if ax not in wires]
-    src = list(range(k))                     # output qubit axes (currently in front)
-    dst = list(wires)                        # where they should end up
+    src = list(range(k))  # output qubit axes (currently in front)
+    dst = list(wires)  # where they should end up
     # Restore the canonical [0, 1, ..., n-1] order.
     out = jnp.moveaxis(contracted, src, dst)
     # ``out`` now has axes laid out as [original axis 0, 1, ..., n-1] with the
@@ -66,8 +64,9 @@ def _apply_gate(state: Array, gate: Array, wires: tuple[int, ...], n_qubits: int
     return out.reshape((1 << n_qubits,))
 
 
-def _apply_program_op(state: Array, op: ProgramOp, params: ParamTree | None, n_qubits: int,
-                      dtype) -> Array:
+def _apply_program_op(
+    state: Array, op: ProgramOp, params: ParamTree | None, n_qubits: int, dtype
+) -> Array:
     param_value = resolve_parameter(op, params)
     if param_value is None:
         gate = gate_matrix(op.name, dtype=dtype)
@@ -80,8 +79,10 @@ def _apply_program_op(state: Array, op: ProgramOp, params: ParamTree | None, n_q
 # Top-level eager / JIT simulation
 # ---------------------------------------------------------------------------
 
-def _simulate_impl(program: Program, params: ParamTree | None, initial_state: Array | None,
-                   dtype) -> Array:
+
+def _simulate_impl(
+    program: Program, params: ParamTree | None, initial_state: Array | None, dtype
+) -> Array:
     state = zero_state(program.n_qubits, dtype=dtype) if initial_state is None else initial_state
     for op in program.ops:
         state = _apply_program_op(state, op, params, program.n_qubits, dtype)
@@ -89,8 +90,9 @@ def _simulate_impl(program: Program, params: ParamTree | None, initial_state: Ar
 
 
 @partial(jax.jit, static_argnames=("program", "dtype"))
-def _simulate_jit(program: Program, params: ParamTree | None, initial_state: Array | None,
-                  dtype) -> Array:
+def _simulate_jit(
+    program: Program, params: ParamTree | None, initial_state: Array | None, dtype
+) -> Array:
     return _simulate_impl(program, params, initial_state, dtype)
 
 
@@ -123,7 +125,8 @@ def simulate(
         Complex dtype for the statevector. Defaults to ``complex64``.
     """
     program = (
-        compile_circuit(circuit_or_program) if isinstance(circuit_or_program, Circuit)
+        compile_circuit(circuit_or_program)
+        if isinstance(circuit_or_program, Circuit)
         else circuit_or_program
     )
     assert_params_match(program, params)
@@ -135,6 +138,7 @@ def simulate(
 # ---------------------------------------------------------------------------
 # lax.scan backend (full-system unitaries)
 # ---------------------------------------------------------------------------
+
 
 def _embed_full_unitary(gate: Array, wires: tuple[int, ...], n_qubits: int, dtype) -> Array:
     """Lift a small gate up to the full ``2^n x 2^n`` operator.
@@ -175,6 +179,7 @@ def make_unitaries(program: Program, params: ParamTree | None, dtype=DEFAULT_COM
 @jax.jit
 def apply_unitaries(unitaries: Array, initial_state: Array) -> Array:
     """Apply each unitary in turn to ``initial_state`` using ``jax.lax.scan``."""
+
     def step(state: Array, u: Array) -> tuple[Array, None]:
         return u @ state, None
 
@@ -191,7 +196,8 @@ def simulate_scan(
 ) -> Array:
     """Scan-based simulation. Slower than :func:`simulate` but pedagogically clear."""
     program = (
-        compile_circuit(circuit_or_program) if isinstance(circuit_or_program, Circuit)
+        compile_circuit(circuit_or_program)
+        if isinstance(circuit_or_program, Circuit)
         else circuit_or_program
     )
     state = zero_state(program.n_qubits, dtype=dtype) if initial_state is None else initial_state

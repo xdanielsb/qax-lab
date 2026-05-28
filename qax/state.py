@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import jax.numpy as jnp
 
-from .typing import Array, DEFAULT_COMPLEX
+from .typing import DEFAULT_COMPLEX, Array
 
 
 def zero_state(n_qubits: int, dtype=DEFAULT_COMPLEX) -> Array:

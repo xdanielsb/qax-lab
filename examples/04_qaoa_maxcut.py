@@ -33,7 +33,7 @@ from qax.optim import adam
 def maxcut_hamiltonian(n: int, edges: list[tuple[int, int]]) -> PauliHamiltonian:
     """Build sum_{(i,j) in E} 1/2 * (1 - Z_i Z_j)."""
     terms: list[tuple[str, float]] = []
-    for (i, j) in edges:
+    for i, j in edges:
         # Identity term contributes a constant 0.5 per edge.
         terms.append(("I" * n, 0.5))
         # The Z_i Z_j term contributes -0.5.
@@ -52,7 +52,7 @@ def build_qaoa_circuit(n: int, edges: list[tuple[int, int]], p: int) -> Circuit:
     for layer in range(p):
         # cost layer: exp(-i * gamma * H_C). Each ZZ rotation is implemented as
         # CX(i,j) RZ(2*gamma, j) CX(i,j) up to a global phase that is constant.
-        for (i, j) in edges:
+        for i, j in edges:
             c = c.cx(i, j).rz(j, f"gamma_{layer}").cx(i, j)
         # mixer layer: exp(-i * beta * sum_q X_q) = prod_q RX(2*beta, q).
         for q in range(n):
@@ -103,7 +103,7 @@ def main() -> None:
 
     n_steps = 300
     for s in range(n_steps):
-        params, opt_state, val = step(params, opt_state)
+        params, opt_state, _val = step(params, opt_state)
         if (s + 1) % 30 == 0 or s == 0:
             print(f"  step {s + 1:4d}  <H_C>={float(energy(params)):.4f}")
 

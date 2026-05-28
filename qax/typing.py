@@ -5,7 +5,7 @@ We keep these in one place so signatures everywhere stay readable.
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
 import jax
 import jax.numpy as jnp
@@ -13,7 +13,7 @@ import jax.numpy as jnp
 Array = jax.Array
 
 # A scalar parameter can be a Python float or a JAX/NumPy scalar.
-Scalar = Union[float, int, Array]
+Scalar = float | int | Array
 
 # A pytree of parameters. Typically a dict[str, Array].
 ParamTree = Any

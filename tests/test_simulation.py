@@ -38,10 +38,7 @@ def test_ghz_state() -> None:
 
 
 def test_jit_and_eager_match() -> None:
-    c = (
-        Circuit(3)
-        .h(0).rx(1, "a").cx(0, 1).ry(2, "b").cz(1, 2).rz(0, "c")
-    )
+    c = Circuit(3).h(0).rx(1, "a").cx(0, 1).ry(2, "b").cz(1, 2).rz(0, "c")
     params = {"a": jnp.array(0.4), "b": jnp.array(-1.1), "c": jnp.array(0.27)}
     s_jit = simulate(c, params, jit=True)
     s_eager = simulate(c, params, jit=False)
@@ -49,10 +46,7 @@ def test_jit_and_eager_match() -> None:
 
 
 def test_scan_and_eager_match() -> None:
-    c = (
-        Circuit(3)
-        .h(0).rx(1, "a").cx(0, 1).ry(2, "b").cz(1, 2).rz(0, "c")
-    )
+    c = Circuit(3).h(0).rx(1, "a").cx(0, 1).ry(2, "b").cz(1, 2).rz(0, "c")
     params = {"a": jnp.array(0.4), "b": jnp.array(-1.1), "c": jnp.array(0.27)}
     s_scan = simulate_scan(c, params)
     s_eager = simulate(c, params, jit=False)
@@ -81,9 +75,6 @@ def test_missing_param_raises() -> None:
 
 
 def test_normalization_preserved() -> None:
-    c = (
-        Circuit(4)
-        .h(0).h(1).cx(0, 2).ry(3, "a").cz(1, 3).rx(2, "b").cx(2, 3)
-    )
+    c = Circuit(4).h(0).h(1).cx(0, 2).ry(3, "a").cz(1, 3).rx(2, "b").cx(2, 3)
     state = simulate(c, params={"a": jnp.array(0.7), "b": jnp.array(-0.3)})
     assert np.isclose(float(jnp.sum(jnp.abs(state) ** 2)), 1.0, atol=1e-5)

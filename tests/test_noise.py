@@ -44,6 +44,6 @@ def test_depolarizing_average_decays_z() -> None:
 
     keys = jax.random.split(jax.random.PRNGKey(0), 4096)
     traj_states = jax.vmap(trajectory)(keys)
-    z_per_traj = (jnp.abs(traj_states[:, 0]) ** 2 - jnp.abs(traj_states[:, 1]) ** 2)
+    z_per_traj = jnp.abs(traj_states[:, 0]) ** 2 - jnp.abs(traj_states[:, 1]) ** 2
     mean_z = float(jnp.mean(z_per_traj))
     assert 0.0 < mean_z < 1.0

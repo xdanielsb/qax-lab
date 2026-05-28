@@ -22,18 +22,18 @@ def main() -> None:
     print("Bell state demo")
     print("=" * 60)
     print(f"\nCircuit: {circuit}")
-    print(f"\nStatevector amplitudes:")
+    print("\nStatevector amplitudes:")
     for i, amp in enumerate(jnp.asarray(state)):
         print(f"  |{i:02b}>: {complex(amp):.4f}")
 
     probs = probabilities(state)
-    print(f"\nProbabilities:")
+    print("\nProbabilities:")
     for i, p in enumerate(jnp.asarray(probs)):
         print(f"  |{i:02b}>: {float(p):.4f}")
 
     key = jax.random.PRNGKey(0)
     counts = sample_counts(key, state, n_qubits=2, n_shots=1024)
-    print(f"\nMeasurement counts (1024 shots):")
+    print("\nMeasurement counts (1024 shots):")
     for bitstring, cnt in counts.items():
         print(f"  |{bitstring}>: {cnt}")
 

@@ -16,6 +16,7 @@ from .gates import GATE_NUM_WIRES, PARAMETERIZED
 @dataclass(frozen=True)
 class GateOp:
     """A single gate application."""
+
     name: str
     wires: tuple[int, ...]
     param: str | float | None = None
@@ -50,15 +51,13 @@ class Circuit:
     # construction helpers
     # ------------------------------------------------------------------
 
-    def _add(self, op: GateOp) -> "Circuit":
+    def _add(self, op: GateOp) -> Circuit:
         for w in op.wires:
             if not 0 <= w < self.n_qubits:
-                raise ValueError(
-                    f"Wire {w} out of range for circuit with {self.n_qubits} qubits."
-                )
-        return replace(self, ops=self.ops + (op,))
+                raise ValueError(f"Wire {w} out of range for circuit with {self.n_qubits} qubits.")
+        return replace(self, ops=(*self.ops, op))
 
-    def add(self, name: str, wires: tuple[int, ...], param: str | float | None = None) -> "Circuit":
+    def add(self, name: str, wires: tuple[int, ...], param: str | float | None = None) -> Circuit:
         """General-purpose append; mainly useful for programmatic circuit building."""
         return self._add(GateOp(name=name, wires=tuple(wires), param=param))
 
@@ -66,71 +65,71 @@ class Circuit:
     # constant single-qubit gates
     # ------------------------------------------------------------------
 
-    def i(self, w: int) -> "Circuit":
+    def i(self, w: int) -> Circuit:
         return self._add(GateOp("i", (w,)))
 
-    def x(self, w: int) -> "Circuit":
+    def x(self, w: int) -> Circuit:
         return self._add(GateOp("x", (w,)))
 
-    def y(self, w: int) -> "Circuit":
+    def y(self, w: int) -> Circuit:
         return self._add(GateOp("y", (w,)))
 
-    def z(self, w: int) -> "Circuit":
+    def z(self, w: int) -> Circuit:
         return self._add(GateOp("z", (w,)))
 
-    def h(self, w: int) -> "Circuit":
+    def h(self, w: int) -> Circuit:
         return self._add(GateOp("h", (w,)))
 
-    def s(self, w: int) -> "Circuit":
+    def s(self, w: int) -> Circuit:
         return self._add(GateOp("s", (w,)))
 
-    def sdg(self, w: int) -> "Circuit":
+    def sdg(self, w: int) -> Circuit:
         return self._add(GateOp("sdg", (w,)))
 
-    def t(self, w: int) -> "Circuit":
+    def t(self, w: int) -> Circuit:
         return self._add(GateOp("t", (w,)))
 
-    def tdg(self, w: int) -> "Circuit":
+    def tdg(self, w: int) -> Circuit:
         return self._add(GateOp("tdg", (w,)))
 
     # ------------------------------------------------------------------
     # parameterized single-qubit gates
     # ------------------------------------------------------------------
 
-    def rx(self, w: int, param: str | float) -> "Circuit":
+    def rx(self, w: int, param: str | float) -> Circuit:
         return self._add(GateOp("rx", (w,), param))
 
-    def ry(self, w: int, param: str | float) -> "Circuit":
+    def ry(self, w: int, param: str | float) -> Circuit:
         return self._add(GateOp("ry", (w,), param))
 
-    def rz(self, w: int, param: str | float) -> "Circuit":
+    def rz(self, w: int, param: str | float) -> Circuit:
         return self._add(GateOp("rz", (w,), param))
 
-    def phase(self, w: int, param: str | float) -> "Circuit":
+    def phase(self, w: int, param: str | float) -> Circuit:
         return self._add(GateOp("phase", (w,), param))
 
     # ------------------------------------------------------------------
     # two-qubit gates
     # ------------------------------------------------------------------
 
-    def cx(self, control: int, target: int) -> "Circuit":
+    def cx(self, control: int, target: int) -> Circuit:
         return self._add(GateOp("cx", (control, target)))
 
     cnot = cx
 
-    def cz(self, q0: int, q1: int) -> "Circuit":
+    def cz(self, q0: int, q1: int) -> Circuit:
         return self._add(GateOp("cz", (q0, q1)))
 
-    def swap(self, q0: int, q1: int) -> "Circuit":
+    def swap(self, q0: int, q1: int) -> Circuit:
         return self._add(GateOp("swap", (q0, q1)))
 
-    def crx(self, control: int, target: int, param: str | float) -> "Circuit":
+    def crx(self, control: int, target: int, param: str | float) -> Circuit:
         return self._add(GateOp("crx", (control, target), param))
 
-    def cry(self, control: int, target: int, param: str | float) -> "Circuit":
+    def cry(self, control: int, target: int, param: str | float) -> Circuit:
         return self._add(GateOp("cry", (control, target), param))
 
-    def crz(self, control: int, target: int, param: str | float) -> "Circuit":
+    def crz(self, control: int, target: int, param: str | float) -> Circuit:
         return self._add(GateOp("crz", (control, target), param))
 
     # ------------------------------------------------------------------

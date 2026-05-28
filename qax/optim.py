@@ -18,8 +18,9 @@ return new pytrees, which keeps everything JIT-friendly.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any
 
 import jax
 import jax.numpy as jnp
@@ -56,6 +57,7 @@ def _zeros_like(tree: ParamTree) -> ParamTree:
 # SGD (with optional momentum)
 # ---------------------------------------------------------------------------
 
+
 def sgd(learning_rate: float, momentum: float = 0.0) -> Optimizer:
     """Stochastic gradient descent with optional Polyak momentum."""
 
@@ -81,9 +83,11 @@ def sgd(learning_rate: float, momentum: float = 0.0) -> Optimizer:
 # Adam
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class AdamState:
     """First/second-moment buffers and step counter."""
+
     step: Array
     m: ParamTree
     v: ParamTree

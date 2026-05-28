@@ -18,9 +18,7 @@ from qax.optim import adam
 
 
 def ghz_state(n_qubits: int) -> jnp.ndarray:
-    target = simulate(
-        Circuit(n_qubits).h(0).cx(0, 1).cx(1, 2)
-    )
+    target = simulate(Circuit(n_qubits).h(0).cx(0, 1).cx(1, 2))
     return target
 
 
@@ -31,9 +29,14 @@ def build_ansatz() -> Circuit:
     # symmetric ansatz would have at small initialization.
     return (
         Circuit(3)
-        .ry(0, "a0").ry(1, "a1").ry(2, "a2")
-        .cx(0, 1).cx(1, 2)
-        .ry(0, "b0").ry(1, "b1").ry(2, "b2")
+        .ry(0, "a0")
+        .ry(1, "a1")
+        .ry(2, "a2")
+        .cx(0, 1)
+        .cx(1, 2)
+        .ry(0, "b0")
+        .ry(1, "b1")
+        .ry(2, "b2")
     )
 
 
@@ -80,7 +83,7 @@ def main() -> None:
     final_state = simulate(ansatz, params)
     final_fid = float(fidelity(final_state, target))
     print(f"\nFinal fidelity: {final_fid:.6f}")
-    print(f"\nLearned parameters:")
+    print("\nLearned parameters:")
     for k in sorted(params):
         print(f"  {k}: {float(params[k]):+.4f}")
 

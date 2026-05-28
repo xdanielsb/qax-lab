@@ -13,11 +13,12 @@ from __future__ import annotations
 
 import jax.numpy as jnp
 
-from .typing import Array, DEFAULT_COMPLEX, Scalar
+from .typing import DEFAULT_COMPLEX, Array, Scalar
 
 # ---------------------------------------------------------------------------
 # Constant single-qubit gates
 # ---------------------------------------------------------------------------
+
 
 def i(dtype=DEFAULT_COMPLEX) -> Array:
     return jnp.eye(2, dtype=dtype)
@@ -58,6 +59,7 @@ def tdg(dtype=DEFAULT_COMPLEX) -> Array:
 # ---------------------------------------------------------------------------
 # Parameterized single-qubit gates
 # ---------------------------------------------------------------------------
+
 
 def _theta(theta: Scalar, dtype) -> Array:
     # Promote to the gate's real component dtype before any complex ops so that
@@ -112,6 +114,7 @@ def phase(theta: Scalar, dtype=DEFAULT_COMPLEX) -> Array:
 # ---------------------------------------------------------------------------
 # Two-qubit gates
 # ---------------------------------------------------------------------------
+
 
 def cnot(dtype=DEFAULT_COMPLEX) -> Array:
     """CNOT with qubit 0 as control, qubit 1 as target (big-endian)."""
@@ -175,7 +178,7 @@ def _controlled(u: Array, dtype) -> Array:
 # Lookup tables
 # ---------------------------------------------------------------------------
 
-CONSTANT_GATES: dict[str, "callable"] = {
+CONSTANT_GATES: dict[str, callable] = {
     "i": i,
     "x": x,
     "y": y,
@@ -191,7 +194,7 @@ CONSTANT_GATES: dict[str, "callable"] = {
     "swap": swap,
 }
 
-PARAM_GATES: dict[str, "callable"] = {
+PARAM_GATES: dict[str, callable] = {
     "rx": rx,
     "ry": ry,
     "rz": rz,
@@ -202,10 +205,26 @@ PARAM_GATES: dict[str, "callable"] = {
 }
 
 GATE_NUM_WIRES: dict[str, int] = {
-    "i": 1, "x": 1, "y": 1, "z": 1, "h": 1, "s": 1, "sdg": 1, "t": 1, "tdg": 1,
-    "rx": 1, "ry": 1, "rz": 1, "phase": 1,
-    "cnot": 2, "cx": 2, "cz": 2, "swap": 2,
-    "crx": 2, "cry": 2, "crz": 2,
+    "i": 1,
+    "x": 1,
+    "y": 1,
+    "z": 1,
+    "h": 1,
+    "s": 1,
+    "sdg": 1,
+    "t": 1,
+    "tdg": 1,
+    "rx": 1,
+    "ry": 1,
+    "rz": 1,
+    "phase": 1,
+    "cnot": 2,
+    "cx": 2,
+    "cz": 2,
+    "swap": 2,
+    "crx": 2,
+    "cry": 2,
+    "crz": 2,
 }
 
 PARAMETERIZED: set[str] = set(PARAM_GATES.keys())

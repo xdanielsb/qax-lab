@@ -13,7 +13,6 @@ Run with::
 from __future__ import annotations
 
 import jax
-import jax.numpy as jnp
 import numpy as np
 
 from qax import Circuit, PauliHamiltonian, expectation, simulate
@@ -74,7 +73,7 @@ def main() -> None:
     print("Tiny VQE: H = ZI + IZ + 0.5 * XX")
     print("=" * 60)
     print(f"Exact ground-state energy: {ground_truth:.6f}")
-    print(f"\nAnsatz depth: 2 layers (12 parameters)")
+    print("\nAnsatz depth: 2 layers (12 parameters)")
     print(f"Initial energy: {float(energy(params)):.6f}\n")
 
     n_steps = 500

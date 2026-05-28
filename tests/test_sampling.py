@@ -43,9 +43,7 @@ def test_counts_from_indices_returns_correct_keys() -> None:
 
 def test_sample_frequencies_match_probabilities() -> None:
     key = jax.random.PRNGKey(42)
-    state = simulate(
-        Circuit(3).h(0).ry(1, "a").cx(0, 2), params={"a": jnp.array(0.6)}
-    )
+    state = simulate(Circuit(3).h(0).ry(1, "a").cx(0, 2), params={"a": jnp.array(0.6)})
     n = 100_000
     counts = sample_counts(key, state, n_qubits=3, n_shots=n)
     probs = np.asarray(probabilities(state))

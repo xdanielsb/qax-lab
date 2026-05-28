@@ -16,11 +16,11 @@ from .state import basis_state, bitstring, normalize, probabilities, zero_state
 __all__ = [
     "Circuit",
     "GateOp",
+    "NoiseChannel",
     "PauliHamiltonian",
     "PauliTerm",
     "Program",
     "ProgramOp",
-    "NoiseChannel",
     "apply_channel",
     "apply_pauli_string",
     "apply_unitaries",

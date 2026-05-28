@@ -20,7 +20,7 @@ import jax.numpy as jnp
 
 from . import gates
 from .simulate import _apply_gate
-from .typing import Array, DEFAULT_COMPLEX, PRNGKey
+from .typing import DEFAULT_COMPLEX, Array, PRNGKey
 
 Channel = Literal["bit_flip", "phase_flip", "depolarizing"]
 
@@ -28,6 +28,7 @@ Channel = Literal["bit_flip", "phase_flip", "depolarizing"]
 @dataclass(frozen=True)
 class NoiseChannel:
     """Apply one of the three textbook single-qubit channels at ``probability``."""
+
     kind: Channel
     wire: int
     probability: float
@@ -60,7 +61,8 @@ def apply_channel(
         y_state = _apply_gate(state, gates.y(dtype=dtype), (channel.wire,), n_qubits)
         z_state = _apply_gate(state, gates.z(dtype=dtype), (channel.wire,), n_qubits)
         flipped = jnp.where(
-            which == 0, x_state,
+            which == 0,
+            x_state,
             jnp.where(which == 1, y_state, z_state),
         )
         return jnp.where(u < channel.probability, flipped, state)

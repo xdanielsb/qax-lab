@@ -13,8 +13,8 @@ differentiate them.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Mapping
 
 import jax.numpy as jnp
 
@@ -26,9 +26,10 @@ from .typing import Array, ParamTree
 @dataclass(frozen=True)
 class ProgramOp:
     """A frozen, hashable description of one compiled gate."""
+
     name: str
     wires: tuple[int, ...]
-    param_name: str | None     # name in the user's params dict, if any
+    param_name: str | None  # name in the user's params dict, if any
     param_value: float | None  # baked-in literal, if any
 
 

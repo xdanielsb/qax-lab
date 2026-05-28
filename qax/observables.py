@@ -14,17 +14,17 @@ matrix.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 import jax
 import jax.numpy as jnp
 
 from . import gates
 from .simulate import _apply_gate
-from .typing import Array, DEFAULT_COMPLEX
+from .typing import DEFAULT_COMPLEX, Array
 
-_PAULI_MATRICES: dict[str, "callable"] = {
+_PAULI_MATRICES: dict[str, callable] = {
     "I": gates.i,
     "X": gates.x,
     "Y": gates.y,
@@ -35,6 +35,7 @@ _PAULI_MATRICES: dict[str, "callable"] = {
 @dataclass(frozen=True)
 class PauliTerm:
     """A single weighted Pauli tensor product like ``("XYZ", -0.25)``."""
+
     pauli: str
     coeff: float
 
@@ -112,7 +113,8 @@ def expectation(state: Array, hamiltonian: PauliHamiltonian, dtype=DEFAULT_COMPL
     """
     if state.shape != (1 << hamiltonian.n_qubits,):
         raise ValueError(
-            f"Hamiltonian on {hamiltonian.n_qubits} qubits cannot act on state of shape {state.shape}."
+            f"Hamiltonian on {hamiltonian.n_qubits} qubits cannot act on state "
+            f"of shape {state.shape}."
         )
 
     total = jnp.asarray(0.0, dtype=jnp.float32 if dtype == jnp.complex64 else jnp.float64)
@@ -135,9 +137,7 @@ def expectation_pauli(state: Array, pauli_index: Array, coeffs: Array) -> Array:
     ``vmap``/``scan`` once it has been packed.
     """
     # Materialize per-qubit Pauli matrices once and gather by index.
-    pauli_stack = jnp.stack(
-        [gates.i(), gates.x(), gates.y(), gates.z()], axis=0
-    )  # shape (4, 2, 2)
+    pauli_stack = jnp.stack([gates.i(), gates.x(), gates.y(), gates.z()], axis=0)  # shape (4, 2, 2)
 
     n_qubits = pauli_index.shape[1]
 

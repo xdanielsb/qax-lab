@@ -65,6 +65,4 @@ def test_jit_grad_matches_eager_grad() -> None:
     eager_grad = jax.grad(_energy)(params, circuit, hamiltonian)
     jit_grad = jax.jit(jax.grad(_energy), static_argnums=(1, 2))(params, circuit, hamiltonian)
     for k in eager_grad:
-        np.testing.assert_allclose(
-            np.asarray(eager_grad[k]), np.asarray(jit_grad[k]), atol=1e-5
-        )
+        np.testing.assert_allclose(np.asarray(eager_grad[k]), np.asarray(jit_grad[k]), atol=1e-5)
