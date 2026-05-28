@@ -175,21 +175,38 @@ uv run python benchmarks/benchmark_vmap_batching.py
 uv run python benchmarks/benchmark_scan_vs_loop.py
 ```
 
-Sample output (CPU; exact numbers depend on hardware):
+Sample output on a developer laptop (CPU; exact numbers depend on hardware):
 
 ```text
-Circuit: 8 qubits, 75 gates
+benchmark_jit_vs_eager.py
+-------------------------
+Circuit: 8 qubits, 115 gates
+Eager simulation:           70.82 ms / run
+JIT first call:            613.82 ms  (includes compile)
+JIT cached call:             0.30 ms / run
+JIT speedup over eager:    236x
 
-Eager simulation:          103.42 ms / run
-JIT first call:           1207.81 ms  (includes compile)
-JIT cached call:             0.67 ms / run
+benchmark_vmap_batching.py
+--------------------------
+Circuit: 6 qubits, 51 gates, batch=256
+Sequential (256 calls):    985.12 ms
+vmap   (256 in one call):    5.58 ms
+vmap speedup over loop:    177x
 
-JIT speedup over eager:  154.4x
+benchmark_scan_vs_loop.py
+-------------------------
+Circuit: 6 qubits, 85 gates
+Max |default - scan|:        1.80e-07
+JIT default (cached):        0.17 ms / run
+JIT scan    (cached):        1.23 ms / run
 ```
 
 The "first call" timing includes XLA compilation and is the fair number
 **only for one-shot evaluations**. For training loops and other repeated
-workloads the cached call is the right comparison.
+workloads the cached call is the right comparison. The `scan` path is
+slower because it explicitly materializes full-system unitaries; the
+default backend contracts gates directly against the statevector and
+keeps memory at `O(2^n)` per gate.
 
 ## Tests
 

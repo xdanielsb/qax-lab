@@ -25,13 +25,15 @@ def ghz_state(n_qubits: int) -> jnp.ndarray:
 
 
 def build_ansatz() -> Circuit:
+    # Hardware-efficient style: a rotation layer, an entangling layer, then a final
+    # rotation layer. Six parameters is more than enough to reach a 3-qubit GHZ
+    # state and the topology avoids the "two CX layers cancel" pathology that a
+    # symmetric ansatz would have at small initialization.
     return (
         Circuit(3)
-        .ry(0, "a").ry(1, "b").ry(2, "c")
+        .ry(0, "a0").ry(1, "a1").ry(2, "a2")
         .cx(0, 1).cx(1, 2)
-        .rz(0, "d").rz(1, "e").rz(2, "f")
-        .cx(0, 1).cx(1, 2)
-        .ry(0, "g").ry(1, "h").ry(2, "i")
+        .ry(0, "b0").ry(1, "b1").ry(2, "b2")
     )
 
 
